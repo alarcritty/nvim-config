@@ -18,6 +18,11 @@ Welcome to my personal Neovim configuration! This setup is built for performance
 
 ## 📁 Folder Structure
 
+**Direct paths for reference:**
+
+- `nvim/lua/core`
+- `nvim/lua/plugins`
+
 
 ## 🛠️ Setup
 
