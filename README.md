@@ -1,4 +1,4 @@
-# 🧠 Aditya's Neovim Config
+# 🧠 My Neovim Config
 
 Welcome to my personal Neovim configuration! This setup is built for performance, productivity, and a smooth developer experience — with a touch of aesthetic appeal.
 
