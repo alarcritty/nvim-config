@@ -37,7 +37,7 @@ git clone https://github.com/AdityaMalik7/nvim-config ~/.config/nvim
 ## 🙌 Credits
 
 Shoutout to the awesome open-source community and plugin authors!  
-Inspired by configs from [@tjdevries](https://github.com/tjdevries), [@folke](https://github.com/folke), and many others.
+Inspired by configs from [@tjdevries](https://github.com/tjdevries), [@folke](https://github.com/folke), [@hendrikmi] (https://github.com/hendrikmi), and many others.
 
 
 
