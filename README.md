@@ -5,6 +5,8 @@ A modern, fast, and feature-rich Neovim configuration designed for developers wh
 ![Neovim](https://img.shields.io/badge/NeoVim-%2357A143.svg?&style=for-the-badge&logo=neovim&logoColor=white)
 ![Lua](https://img.shields.io/badge/lua-%232C2D72.svg?style=for-the-badge&logo=lua&logoColor=white)
 
+![Neovim Screenshot](./assets/nvim.png)
+
 ## ✨ Features
 
 - 📦 **Plugin Management**: Efficient plugin management with [lazy.nvim](https://github.com/folke/lazy.nvim)
