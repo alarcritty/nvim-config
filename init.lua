@@ -1,12 +1,1 @@
--- bootstrap lazy.nvim, LazyVim and your plugins
-require("config.keymaps")
-require("config.signs")
 require("config.lazy")
-require("plugins.colorscheme")
-require("plugins.alpha")
-require("plugins.telescope")
-require("plugins.nvim-tree")
-require("plugins.autoformatting")
-require("plugins.wakatime")
-require("plugins.lualine")
-require("plugins.icons-colors")
