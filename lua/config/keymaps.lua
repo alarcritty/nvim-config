@@ -2,7 +2,7 @@ local keymap = vim.keymap
 local opts = { noremap = true, silent = true }
 -- Save and quit shortcuts
 keymap.set("n", "<C-s>", ":w<Return>", opts)
-keymap.set("n", "<C-q>", ":q<Return>", opts)
+keymap.set("n", "<C-q>", ":q<CR>", opts)
 
 -- Comment/uncomment shortcuts
 keymap.set("n", "<C-/>", "gcc", { remap = true })
