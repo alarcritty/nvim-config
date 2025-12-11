@@ -1,5 +1,6 @@
+
 return {
-	-- tools
+	-- mason tools
 	{
 		"williamboman/mason.nvim",
 		opts = function(_, opts)
@@ -18,16 +19,62 @@ return {
 				"flake8",
 				"clangd",
 				"clang-format",
+
+				-- 🚀 Dart & Flutter
+				"dart-debug-adapter",
 			})
 		end,
 	},
-	-- lsp servers
+
+	-- flutter-tools.nvim (best Flutter experience in nvim)
+	{
+		"akinsho/flutter-tools.nvim",
+		lazy = false,
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			"stevearc/dressing.nvim", -- Optional UI improvements
+		},
+		config = function()
+			require("flutter-tools").setup({
+				flutter_path = "flutter",
+				dart_path = "dart",
+				ui = {
+					border = "rounded",
+					notification_style = "native",
+				},
+				debugger = {
+					enabled = true,
+					run_via_dap = true,
+				},
+				decorations = {
+					statusline = {
+						app_version = true,
+						device = true,
+					},
+				},
+				widget_guides = {
+					enabled = true,
+				},
+				lsp = {
+					color = { enabled = true },
+					settings = {
+						dart = {
+							completeFunctionCalls = true,
+							showTodos = true,
+						},
+					},
+				},
+			})
+		end,
+	},
+
+	-- All LSPs
 	{
 		"neovim/nvim-lspconfig",
 		opts = {
 			inlay_hints = { enabled = false },
-			---@type lspconfig.options
 			servers = {
+				-- Existing LSP configs
 				cssls = {},
 				tailwindcss = {
 					root_dir = function(...)
@@ -64,10 +111,18 @@ return {
 						},
 					},
 				},
-				-- Python LSP
+
+				-- Python
 				pyright = {
 					root_dir = function(...)
-						return require("lspconfig.util").root_pattern(".git", "pyproject.toml", "setup.py", "setup.cfg", "requirements.txt", "Pipfile")(...)
+						return require("lspconfig.util").root_pattern(
+							".git",
+							"pyproject.toml",
+							"setup.py",
+							"setup.cfg",
+							"requirements.txt",
+							"Pipfile"
+						)(...)
 					end,
 					settings = {
 						python = {
@@ -80,7 +135,8 @@ return {
 						},
 					},
 				},
-				-- C/C++ LSP
+
+				-- C/C++
 				clangd = {
 					root_dir = function(...)
 						return require("lspconfig.util").root_pattern(
@@ -109,7 +165,9 @@ return {
 						usePlaceholders = true,
 					},
 				},
+
 				html = {},
+
 				yamlls = {
 					settings = {
 						yaml = {
@@ -117,58 +175,21 @@ return {
 						},
 					},
 				},
+
 				lua_ls = {
-					-- enabled = false,
 					single_file_support = true,
 					settings = {
 						Lua = {
-							workspace = {
-								checkThirdParty = false,
-							},
-							completion = {
-								workspaceWord = true,
-								callSnippet = "Both",
-							},
-							misc = {
-								parameters = {
-									-- "--log-level=trace",
-								},
-							},
+							workspace = { checkThirdParty = false },
+							completion = { workspaceWord = true, callSnippet = "Both" },
 							hint = {
 								enable = true,
-								setType = false,
 								paramType = true,
 								paramName = "Disable",
-								semicolon = "Disable",
 								arrayIndex = "Disable",
-							},
-							doc = {
-								privateName = { "^_" },
-							},
-							type = {
-								castNumberToInteger = true,
 							},
 							diagnostics = {
 								disable = { "incomplete-signature-doc", "trailing-space" },
-								-- enable = false,
-								groupSeverity = {
-									strong = "Warning",
-									strict = "Warning",
-								},
-								groupFileStatus = {
-									["ambiguity"] = "Opened",
-									["await"] = "Opened",
-									["codestyle"] = "None",
-									["duplicate"] = "Opened",
-									["global"] = "Opened",
-									["luadoc"] = "Opened",
-									["redefined"] = "Opened",
-									["strict"] = "Opened",
-									["strong"] = "Opened",
-									["type-check"] = "Opened",
-									["unbalanced"] = "Opened",
-									["unused"] = "Opened",
-								},
 								unusedLocalExclude = { "_*" },
 							},
 							format = {
@@ -182,10 +203,27 @@ return {
 						},
 					},
 				},
+
+				-- 🚀 NEW: Dart Language Server
+				dartls = {
+					on_attach = function(client, bufnr)
+						-- Enable formatting
+						client.server_capabilities.documentFormattingProvider = true
+					end,
+					settings = {
+						dart = {
+							analysisExcludedFolders = {},
+							suggestFromUnimportedLibraries = true,
+							showTodos = true,
+						},
+					},
+				},
 			},
 			setup = {},
 		},
 	},
+
+	-- override keymaps
 	{
 		"neovim/nvim-lspconfig",
 		opts = function()
@@ -194,7 +232,6 @@ return {
 				{
 					"gd",
 					function()
-						-- DO NOT RESUSE WINDOW
 						require("telescope.builtin").lsp_definitions({ reuse_win = false })
 					end,
 					desc = "Goto Definition",
