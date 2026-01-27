@@ -57,6 +57,10 @@ return {
 		"rcarriga/nvim-notify",
 		opts = {
 			timeout = 5000,
+			background_colour = "#000000",
+			stages = "fade_in_slide_out",
+			render = "wrapped-compact",
+			max_width = 50,
 		},
 	},
 
@@ -79,9 +83,21 @@ return {
 		opts = {
 			options = {
 				mode = "tabs",
-				-- separator_style = "slant",
 				show_buffer_close_icons = false,
 				show_close_icon = false,
+				indicator = { style = "underline" },
+				modified_icon = "●",
+			},
+			highlights = {
+				fill = { bg = "#000000" },
+				background = { fg = "#565f89", bg = "#000000" },
+				tab = { fg = "#565f89", bg = "#000000" },
+				tab_selected = { fg = "#7dcfff", bg = "#080810", bold = true },
+				tab_separator = { fg = "#0c0c14", bg = "#000000" },
+				tab_separator_selected = { fg = "#7dcfff", bg = "#080810" },
+				buffer_selected = { fg = "#7dcfff", bg = "#080810", bold = true, italic = false },
+				indicator_selected = { fg = "#7dcfff", bg = "#080810" },
+				modified_selected = { fg = "#bb9af7", bg = "#080810" },
 			},
 		},
 	},
@@ -89,16 +105,14 @@ return {
 	-- filename
 	{
 		"b0o/incline.nvim",
-		dependencies = { "craftzdog/solarized-osaka.nvim" },
 		event = "BufReadPre",
 		priority = 1200,
 		config = function()
-			local colors = require("solarized-osaka.colors").setup()
 			require("incline").setup({
 				highlight = {
 					groups = {
-						InclineNormal = { guibg = colors.magenta500, guifg = colors.base04 },
-						InclineNormalNC = { guifg = colors.violet500, guibg = colors.base03 },
+						InclineNormal = { guibg = "#7dcfff", guifg = "#000000" },
+						InclineNormalNC = { guifg = "#565f89", guibg = "#080810" },
 					},
 				},
 				window = { margin = { vertical = 0, horizontal = 1 } },
@@ -121,19 +135,93 @@ return {
 	-- statusline
 	{
 		"nvim-lualine/lualine.nvim",
+		event = "VeryLazy",
 		opts = function(_, opts)
-			local LazyVim = require("lazyvim.util")
-			opts.sections.lualine_c[4] = {
-				LazyVim.lualine.pretty_path({
-					length = 0,
-					relative = "cwd",
-					modified_hl = "MatchParen",
-					directory_hl = "",
-					filename_hl = "Bold",
-					modified_sign = "",
-					readonly_icon = " 󰌾 ",
-				}),
+			opts.options = {
+				theme = {
+					normal = {
+						a = { fg = "#000000", bg = "#7dcfff", gui = "bold" },
+						b = { fg = "#7dcfff", bg = "#080810" },
+						c = { fg = "#565f89", bg = "#000000" },
+					},
+					insert = {
+						a = { fg = "#000000", bg = "#9ece6a", gui = "bold" },
+						b = { fg = "#9ece6a", bg = "#080810" },
+					},
+					visual = {
+						a = { fg = "#000000", bg = "#bb9af7", gui = "bold" },
+						b = { fg = "#bb9af7", bg = "#080810" },
+					},
+					replace = {
+						a = { fg = "#000000", bg = "#f7768e", gui = "bold" },
+					},
+					command = {
+						a = { fg = "#000000", bg = "#e0af68", gui = "bold" },
+					},
+					inactive = {
+						a = { fg = "#565f89", bg = "#000000" },
+						b = { fg = "#565f89", bg = "#000000" },
+						c = { fg = "#565f89", bg = "#000000" },
+					},
+				},
+				component_separators = { left = "", right = "" },
+				section_separators = { left = "", right = "" },
+				globalstatus = true,
+				disabled_filetypes = { statusline = { "dashboard", "alpha", "starter" } },
 			}
+
+			opts.sections = {
+				lualine_a = { "mode" },
+				lualine_b = { "branch", "diff" },
+				lualine_c = {
+					"diagnostics",
+					{
+						"filetype",
+						icon_only = true,
+						padding = { left = 1, right = 0 },
+					},
+					{
+						require("lazyvim.util").lualine.pretty_path({
+							length = 0,
+							relative = "cwd",
+							modified_hl = "MatchParen",
+							directory_hl = "",
+							filename_hl = "Bold",
+							modified_sign = " ●",
+							readonly_icon = " 󰌾 ",
+						}),
+					},
+				},
+				lualine_x = {
+					{
+						function()
+							local clients = vim.lsp.get_clients({ bufnr = 0 })
+							if #clients == 0 then
+								return ""
+							end
+							local names = {}
+							for _, client in ipairs(clients) do
+								table.insert(names, client.name)
+							end
+							return " " .. table.concat(names, ", ")
+						end,
+						color = { fg = "#565f89" },
+					},
+				},
+				lualine_y = { "progress" },
+				lualine_z = { "location" },
+			}
+
+			opts.inactive_sections = {
+				lualine_a = {},
+				lualine_b = {},
+				lualine_c = { "filename" },
+				lualine_x = { "location" },
+				lualine_y = {},
+				lualine_z = {},
+			}
+
+			opts.extensions = { "lazy", "mason", "trouble" }
 		end,
 	},
 
@@ -154,21 +242,37 @@ return {
 		"MeanderingProgrammer/render-markdown.nvim",
 		enabled = false,
 	},
-{
-  "folke/snacks.nvim",
-  opts = {
-    dashboard = {
-      preset = {
-        header = [[
-     █████╗ ██╗      █████╗ ██████╗  ██████╗██████╗ ██╗████████╗████████╗██╗   ██╗
-    ██╔══██╗██║     ██╔══██╗██╔══██╗██╔════╝██╔══██╗██║╚══██╔══╝╚══██╔══╝╚██╗ ██╔╝
-    ███████║██║     ███████║██████╔╝██║     ██████╔╝██║   ██║      ██║     ╚████╔╝ 
-    ██╔══██║██║     ██╔══██║██╔══██╗██║     ██╔══██╗██║   ██║      ██║      ╚██╔╝  
-    ██║  ██║███████╗██║  ██║██║  ██║╚██████╗██║  ██║██║   ██║      ██║       ██║   
-    ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝╚═╝   ╚═╝      ╚═╝       ╚═╝   
-        ]],
-      },
-    },
-  },
-}
+	{
+		"folke/snacks.nvim",
+		opts = {
+			dashboard = {
+				preset = {
+					header = [[
+
+       █████╗ ██╗      █████╗ ██████╗  ██████╗██████╗ ██╗████████╗████████╗██╗   ██╗
+      ██╔══██╗██║     ██╔══██╗██╔══██╗██╔════╝██╔══██╗██║╚══██╔══╝╚══██╔══╝╚██╗ ██╔╝
+      ███████║██║     ███████║██████╔╝██║     ██████╔╝██║   ██║      ██║    ╚████╔╝
+      ██╔══██║██║     ██╔══██║██╔══██╗██║     ██╔══██║██║   ██║      ██║     ╚██╔╝
+      ██║  ██║███████╗██║  ██║██║  ██║╚██████╗██║  ██║██║   ██║      ██║      ██║
+      ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝╚═╝   ╚═╝      ╚═╝      ╚═╝
+
+          ]],
+				},
+				sections = {
+					{ section = "header" },
+					{ section = "keys", gap = 1, padding = 1 },
+					{ section = "startup" },
+				},
+			},
+		},
+	},
+
+	-- Force neon colors - override any LazyVim defaults
+	{
+		"LazyVim/LazyVim",
+		opts = function(_, opts)
+			-- Ensure our colorscheme is used
+			opts.colorscheme = "tokyonight-night"
+		end,
+	},
 }
