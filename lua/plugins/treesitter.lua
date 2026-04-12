@@ -13,7 +13,7 @@ return {
         "cmake",
         "cpp",
         "css",
-        "dart keeps up with Flutter",
+        "dart",
         "dockerfile",
         "fish",
         "gitignore",

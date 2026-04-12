@@ -4,6 +4,7 @@ vim.opt.encoding = "utf-8"
 vim.opt.fileencoding = "utf-8"
 vim.opt.hidden = true
 vim.opt.number = true
+vim.opt.relativenumber = true
 
 vim.opt.title = true
 vim.opt.autoindent = true
@@ -52,6 +53,9 @@ vim.filetype.add({
 		mdx = "mdx",
 	},
 })
+
+-- Show default nvim intro screen
+vim.opt.shortmess:remove("I")
 
 vim.g.lazyvim_prettier_needs_config = true
 vim.g.lazyvim_picker = "telescope"
